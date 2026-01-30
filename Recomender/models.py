@@ -12,6 +12,7 @@ class CropHistory(models.Model):
     humidity = models.FloatField()
     ph = models.FloatField()
     rainfall = models.FloatField()
+    soil_type = models.CharField(max_length=50, blank=True, null=True)
     recommended_crop = models.CharField(max_length=100)
     timestamp = models.DateTimeField(default=timezone.now)
 

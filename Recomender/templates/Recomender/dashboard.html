@@ -1,0 +1,85 @@
+{% extends 'Recomender/base.html' %}
+
+{% block title %}Dashboard - CropRecom{% endblock %}
+
+{% block extra_head %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="row mb-4">
+    <div class="col-12 d-flex gap-3">
+      <div class="card p-3 kpi-card">
+        <h6>Total recommendations</h6>
+        <h3>{{ total_recommendations }}</h3>
+      </div>
+      <div class="card p-3 kpi-card">
+        <h6>Avg N</h6>
+        <h3>{{ nutrient_avgs.avg_N|floatformat:2 }}</h3>
+      </div>
+      <div class="card p-3 kpi-card">
+        <h6>Avg P</h6>
+        <h3>{{ nutrient_avgs.avg_P|floatformat:2 }}</h3>
+      </div>
+      <div class="card p-3 kpi-card">
+        <h6>Avg K</h6>
+        <h3>{{ nutrient_avgs.avg_K|floatformat:2 }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Top Recommended Crops</h5>
+          <canvas id="cropChart" height="120"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Recent Recommendations</h5>
+          <ul class="list-group">
+            {% for r in recent %}
+            <li class="list-group-item">
+              <strong>{{ r.recommended_crop }}</strong> — {{ r.user.username }} <span class="text-muted">({{ r.timestamp|date:'Y-m-d H:i' }})</span>
+            </li>
+            {% empty %}
+            <li class="list-group-item">No recommendations yet.</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Filters & Quick Actions</h5>
+          <a href="{% url 'recommend_crop' %}" class="btn btn-primary btn-sm mb-2">New Recommendation</a>
+          <a href="{% url 'history' %}" class="btn btn-outline-secondary btn-sm mb-2">View History</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const labels = {{ crop_labels|safe }};
+  const data = {{ crop_values|safe }};
+  const ctx = document.getElementById('cropChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Recommendations',
+        data: data,
+        backgroundColor: 'rgba(54, 162, 235, 0.6)'
+      }]
+    },
+    options: { responsive: true, maintainAspectRatio: false }
+  });
+</script>
+{% endblock %}

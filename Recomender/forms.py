@@ -15,6 +15,16 @@ class SignUpForm(UserCreationForm):
         fields = ['username', 'password1', 'password2']
 
 class CropRecommendationForm(forms.ModelForm):
+    SOIL_TYPES = [
+        ('Chalky', 'Chalky'),
+        ('Clay', 'Clay'),
+        ('Loam', 'Loam'),
+        ('Peaty', 'Peaty'),
+        ('Sandy', 'Sandy'),
+        ('Silty', 'Silty'),
+    ]
+    soil_type = forms.ChoiceField(choices=SOIL_TYPES, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     class Meta:
         model = CropHistory
-        fields = ['N', 'P', 'K', 'temperature', 'humidity', 'ph', 'rainfall']
+        fields = ['N', 'P', 'K', 'temperature', 'humidity', 'ph', 'rainfall', 'soil_type']
